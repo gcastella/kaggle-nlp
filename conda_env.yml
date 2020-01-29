@@ -1,0 +1,9 @@
+# conda env create -f conda_env.yml
+# conda activate kaggle-nlp
+name: kaggle-nlp
+dependencies:
+  - numpy
+  - pandas
+  - seaborn
+  - matplotlib
+  - scikit-learn
