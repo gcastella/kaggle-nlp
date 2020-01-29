@@ -2,6 +2,8 @@
 # conda activate kaggle-nlp
 name: kaggle-nlp
 dependencies:
+  - python=3.7
+  - jupyter
   - numpy
   - pandas
   - seaborn
