@@ -22,7 +22,7 @@ def print_row(df: pd.Series):
         print(index, ": \n", value)
 
 
-def read_config(file_path="../settings/config.yaml"):
+def read_config(file_path="./settings/config.yaml"):
     """
     Read yaml config file. Use x.etl.impute_missings to refer to elements.
     """

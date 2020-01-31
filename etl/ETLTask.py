@@ -2,18 +2,18 @@ import pandas as pd
 from typing import List
 from utils.utils import read_config, is_number
 from utils.utils_etl import (
-    text_process, is_punctuation, is_mention, is_hashtag, is_link
+    text_process,
+    is_punctuation,
+    is_mention,
+    is_hashtag,
+    is_link,
 )
 
 
 class ETLTask:
     def __init__(self):
         self.config = read_config()
-        (
-            self.train,
-            self.test,
-            self.submission
-        ) = self.read_raw_datasets()
+        (self.train, self.test, self.submission) = self.read_raw_datasets()
 
     def run(self):
         """
@@ -31,9 +31,9 @@ class ETLTask:
         """
         Read the 3 kaggle csv's (train, test, submission).
         """
-        train = pd.read_csv("../data/raw/train.csv")
-        test = pd.read_csv("../data/raw/test.csv")
-        sub = pd.read_csv("../data/raw/sample_submission.csv")
+        train = pd.read_csv("./data/raw/train.csv")
+        test = pd.read_csv("./data/raw/test.csv")
+        sub = pd.read_csv("./data/raw/sample_submission.csv")
         return [train, test, sub]
 
     def add_features(self, dataset: pd.DataFrame) -> pd.DataFrame:
@@ -50,16 +50,28 @@ class ETLTask:
         df["text_clean"] = df["text"].apply(text_process)
 
         # Variables over original text
-        df["n_punctuation"] = df["text"].apply(lambda x: len([c for c in x if is_punctuation(c)]))
-        df["n_capitals"] = df["text"].apply(lambda x: len([c for c in x if c.isupper()]))
-        df["n_arroba"] = df["text"].apply(lambda x: len([i for i in x.split() if is_mention(i)]))
-        df["n_hashtag"] = df["text"].apply(lambda x: len([i for i in x.split() if is_hashtag(i)]))
-        df["n_links"] = df["text"].apply(lambda x: len([i for i in x.split() if is_link(i)]))
+        df["n_punctuation"] = df["text"].apply(
+            lambda x: len([c for c in x if is_punctuation(c)])
+        )
+        df["n_capitals"] = df["text"].apply(
+            lambda x: len([c for c in x if c.isupper()])
+        )
+        df["n_arroba"] = df["text"].apply(
+            lambda x: len([i for i in x.split() if is_mention(i)])
+        )
+        df["n_hashtag"] = df["text"].apply(
+            lambda x: len([i for i in x.split() if is_hashtag(i)])
+        )
+        df["n_links"] = df["text"].apply(
+            lambda x: len([i for i in x.split() if is_link(i)])
+        )
 
         # Variables over cleaned text
         df["n_char"] = df["text_clean"].apply(lambda x: len(x))
         df["n_words"] = df["text_clean"].apply(lambda x: len(x.split()))
-        df["n_numbers"] = df["text_clean"].apply(lambda x: len([i for i in x.split() if is_number(i)]))
+        df["n_numbers"] = df["text_clean"].apply(
+            lambda x: len([i for i in x.split() if is_number(i)])
+        )
 
         # Ratio
         df["ratio_char_word"] = df["n_char"] / df["n_words"]
@@ -75,4 +87,4 @@ class ETLTask:
         return df
 
     def write_processed_data(self, df, file):
-        df.to_parquet(f"../data/{self.config.etl.processed_folder}/{file}")
+        df.to_parquet(f"./data/{self.config.etl.processed_folder}/{file}")

@@ -9,7 +9,7 @@ def is_punctuation(c: str, punctuation=st.punctuation) -> bool:
     return c in punctuation
 
 
-def is_stopword(w: str, stopword=stopwords.words('english')) -> bool:
+def is_stopword(w: str, stopword=stopwords.words("english")) -> bool:
     """
     Checks if a word is a stopword.
     """
@@ -20,14 +20,14 @@ def is_mention(w: str) -> bool:
     """
     Checks if a word is a mention.
     """
-    return i[0] == "@"
+    return w[0] == "@"
 
 
 def is_hashtag(w: str) -> bool:
     """
     Checks if a word is a hashtag.
     """
-    return i[0] == "#"
+    return w[0] == "#"
 
 
 def is_link(w: str) -> bool:
