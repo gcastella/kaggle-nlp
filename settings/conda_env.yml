@@ -1,11 +1,21 @@
 # conda env create -f conda_env.yml
 # conda activate kaggle-nlp
 name: kaggle-nlp
+channels:
+  - defaults
+  - conda-forge
 dependencies:
   - python=3.7
+  - pip=20.0.2
   - jupyter
   - numpy
   - pandas
   - seaborn
   - matplotlib
   - scikit-learn
+  - nltk
+  - pyyaml
+  - pyarrow
+  - typing
+  - pip:
+    - "--editable=git+https://github.com/Infinidat/munch.git#egg=munch"
