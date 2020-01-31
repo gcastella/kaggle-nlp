@@ -21,11 +21,11 @@ class ETLTask:
         """
         train_extended = self.add_features(self.train)
         test_extended = self.add_features(self.test)
-        submission_extended = self.add_features(self.submission)
+        submission = self.submission
 
         self.write_processed_data(train_extended, "train.parquet")
         self.write_processed_data(test_extended, "test.parquet")
-        self.write_processed_data(submission_extended, "submission.parquet")
+        self.write_processed_data(submission, "submission.parquet")
 
     def read_raw_datasets(self) -> List[pd.DataFrame]:
         """
