@@ -1,0 +1,6 @@
+## All config here
+
+etl:
+  processed_folder: "processed"           # Where to store etl processed data.
+  impute_missings: True                   # Impute missings in column location.
+  impute_func: "mean"                     # Use this function to impute.
