@@ -1,7 +1,8 @@
 import pandas as pd
 from typing import List
-from utils.utils import read_config, is_number
-from utils.utils_etl import (
+from utils import (
+    read_config,
+    is_number,
     text_process,
     is_punctuation,
     is_mention,
