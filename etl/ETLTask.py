@@ -1,12 +1,15 @@
 import pandas as pd
 from typing import List
-from utils.utils import read_config, is_number
-from utils.utils_etl import (
+from utils import (
+    read_config,
+    is_number,
     text_process,
     is_punctuation,
     is_mention,
     is_hashtag,
     is_link,
+    tokenize,
+    stem,
 )
 
 
@@ -83,6 +86,11 @@ class ETLTask:
 
         # Location is missing
         df["location_isna"] = df["location"].isna().apply(lambda x: int(x))
+
+        # Tokenization and stemming
+        df["text_tokenized"] = df["text_clean"].apply(tokenize)
+        df["text_processed"] = df["text_tokenized"].apply(stem)
+        df.drop(labels="text_tokenized", axis=1, inplace=True)
 
         return df
 
