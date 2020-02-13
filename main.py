@@ -2,7 +2,6 @@ from etl import ETLTask
 
 
 def main():
-
     ETLTask().run()
 
 
