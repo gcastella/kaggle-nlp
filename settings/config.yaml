@@ -2,11 +2,11 @@
 
 etl:                                      # parameters for etl task.
   raw:
-    folder: "data/0_raw"                  # folder where raw data are.
+    folder: "data/0_raw"                  # folder where 0_raw data are.
     train_file: "train.csv"               # kaggle file for training.
     test_file: "test.csv"                 # kaggle file for submitting the predictions.
   processed:
-    folder: "data/1_processed"            # folder where data processed in the etl task are stored.
+    folder: "data/1_processed"            # folder where data 1_processed in the etl task are stored.
 
 split:                                    # parameters for split task.
   folder: "data/2_split"                  # folder where split files are stored.

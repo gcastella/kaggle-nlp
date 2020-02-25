@@ -32,9 +32,9 @@ def read_processed(config):
 
 
 def read_split(config, run):
-    #todo: this reads form processed atm
+    #todo: this reads form 1_processed atm
     proc_dict = read_processed(config)
-    proc_dict["name"] =  "processed"
+    proc_dict["name"] = "1_processed"
     return [proc_dict]
 
 
