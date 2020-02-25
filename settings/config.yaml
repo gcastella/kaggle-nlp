@@ -1,6 +1,24 @@
 ## All config here
 
-etl:
-  processed_folder: "processed"           # Where to store etl processed data.
-  impute_missings: True                   # Impute missings in column location.
-  impute_func: "mean"                     # Use this function to impute.
+etl:                                      # parameters for etl task.
+  raw:
+    folder: "data/0_raw"                  # folder where raw data are.
+    train_file: "train.csv"               # kaggle file for training.
+    test_file: "test.csv"                 # kaggle file for submitting the predictions.
+  processed:
+    folder: "data/1_processed"            # folder where data processed in the etl task are stored.
+
+split:                                    # parameters for split task.
+  folder: "data/2_split"                  # folder where split files are stored.
+  label: "10_cv"                          # label to use for the split file.
+
+prediction:                               # parameters for prediction task.
+  folder: "data/3_prediction"             # folder where prediction files are stored.
+  target_var: "target"                    # variable to predict.
+  model:
+    folder: "model"                       # folder where model pickle files is stored.
+    label: "null"                         # label for the model name.
+
+submission:                               # parameters for submission task.
+  folder: "data/4_submission"             # folder where submission files are stored.
+  label: "submission"                     # label for the submission name.

@@ -1,8 +1,7 @@
 import pandas as pd
-from typing import List
-from utils import (
-    read_config,
-    is_number,
+from utils.utils import is_number
+from utils.read import read_raw_data
+from utils.utils_etl import (
     text_process,
     is_punctuation,
     is_mention,
@@ -14,9 +13,11 @@ from utils import (
 
 
 class ETLTask:
-    def __init__(self):
-        self.config = read_config()
-        (self.train, self.test, self.submission) = self.read_raw_datasets()
+    def __init__(self, config):
+        self.config = config
+        data_dict = read_raw_data(self.config)
+        self.train = data_dict["train"]
+        self.test = data_dict["test"]
 
     def run(self):
         """
@@ -24,20 +25,9 @@ class ETLTask:
         """
         train_extended = self.add_features(self.train)
         test_extended = self.add_features(self.test)
-        submission = self.submission
 
         self.write_processed_data(train_extended, "train.parquet")
         self.write_processed_data(test_extended, "test.parquet")
-        self.write_processed_data(submission, "submission.parquet")
-
-    def read_raw_datasets(self) -> List[pd.DataFrame]:
-        """
-        Read the 3 kaggle csv's (train, test, submission).
-        """
-        train = pd.read_csv("./data/raw/train.csv")
-        test = pd.read_csv("./data/raw/test.csv")
-        sub = pd.read_csv("./data/raw/sample_submission.csv")
-        return [train, test, sub]
 
     def add_features(self, dataset: pd.DataFrame) -> pd.DataFrame:
         """
@@ -95,4 +85,4 @@ class ETLTask:
         return df
 
     def write_processed_data(self, df, file):
-        df.to_parquet(f"./data/{self.config.etl.processed_folder}/{file}")
+        df.to_parquet(f"./{self.config.etl.processed.folder}/{file}")
