@@ -19,7 +19,7 @@ class ETLTask:
         self.train = data_dict["train"]
         self.test = data_dict["test"]
 
-    def preprocess_data(self):
+    def run(self):
         """
         Preprocesses data
         """

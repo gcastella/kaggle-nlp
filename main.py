@@ -2,8 +2,7 @@ from etl import ETLTask
 
 
 def main():
-    ETLTask().preprocess_data()
-
+    ETLTask().run()
 
 
 if __name__ == "__main__":
