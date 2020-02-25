@@ -1,6 +1,7 @@
 *DS_Store*
-data/processed/*
-data/raw/*
+data/1_processed/*
+data/0_raw/*
+data/3_prediction/*
 .idea/
 .ipynb_checkpoints
 *.ipynb
