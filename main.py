@@ -18,12 +18,6 @@ def main():
                                                       )
                        ).run()
 
-    # SplitDB = CrossValidationSplitTask(config=config, run=run, training_set_proportion=0.7, n_cross_validation=10)
-    # for split in SplitDB:
-    #     print(split)
-    # BasePredictionTask(config=config, run="try").run()
-    # LogisticRegressionTask(run="try", config=config).run()
-
 
 if __name__ == "__main__":
     main()

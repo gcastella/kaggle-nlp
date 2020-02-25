@@ -31,3 +31,4 @@ submission:                               # parameters for submission task.
 
 general:                                  # general parameters
   verbose: True                           # increases verbose
+  eps: 1E-30                              # Numerical zero value

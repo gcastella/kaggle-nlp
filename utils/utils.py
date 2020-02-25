@@ -23,35 +23,36 @@ def print_row(df: pd.Series):
         print(index, ": \n", value)
 
 
-def evaluate_model(predictions, ground_truth, positive=1):
+def evaluate_model(predictions, ground_truth, config, positive=1):
     """
     Return F1 metric used in the competition from prediction and ground truth.
     """
-
+    predictions = pd.Series(predictions["prediction"])
     values = list(set([*predictions, *ground_truth]))[:2]
     cj = pd.merge(
         pd.DataFrame({"key": np.zeros(2), "pred": values}),
         pd.DataFrame({"key": np.zeros(2), "gt": values})
     )
-    print(predictions)
-    print(f"ground_truth:{ground_truth}")
     df = pd.DataFrame({"pred": predictions, "gt": ground_truth})
     df["count"] = 1
+    print(df.head())
     dfg = df.groupby(["pred", "gt"], as_index=False).count()
 
     full_df = pd.merge(cj, dfg, on=["pred", "gt"], how="left").fillna(0)
 
     precision = int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) / (
             int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) +
-            int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] != positive), "count"])
+            int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] != positive), "count"]) +
+            float(config.general.eps)
     )
 
     recall = int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) / (
             int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) +
-            int(full_df.loc[(full_df["pred"] != positive) & (full_df["gt"] == positive), "count"])
+            int(full_df.loc[(full_df["pred"] != positive) & (full_df["gt"] == positive), "count"]) +
+            float(config.general.eps)
     )
 
-    return 2 * precision * recall / (precision + recall)
+    return 2 * precision * recall / (precision + recall + float(config.general.eps))
 
 
 def create_run():

@@ -46,14 +46,16 @@ class BasePredictionTask:
 
             # Calculate metrics
             self.train_metric.append(
-                evaluate_model(train_pred, split["train"][target_str])
+                evaluate_model(train_pred, split["train"][target_str], config=self.config)
             )
             self.test_metric.append(
-                evaluate_model(test_pred, split["test"][target_str])
+                evaluate_model(test_pred, split["test"][target_str], config=self.config)
             )
 
         print("Global model.")
-        full_data = pd.concat(self.split[0]["train"], self.split[0]["test"])
+        # full_data = pd.concat(self.split[0]["train"], self.split[0]["test"])
+        full_data = self.split.whole_training_data
+        print(full_data)
         self.model = self.fit_model(df=full_data)
         self.save_model()
 
@@ -97,6 +99,11 @@ class BasePredictionTask:
     def save_model(self):
         folder = self.config.prediction.model.folder
         label = self.config.prediction.model.label
+        try:
+            os.makedirs(folder)
+        except FileExistsError:
+            if self.config.verbose:
+                print(f"Model folder for the current run {self.run} already exists")
 
         pk.dump(self, open(f"{folder}/{self.run_str}_{label}.p", "wb"))
 
