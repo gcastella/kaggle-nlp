@@ -1,5 +1,10 @@
 import string as st
 from nltk.corpus import stopwords
+import nltk
+
+nltk.download("punkt")
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
 
 
 def is_punctuation(c: str, punctuation=st.punctuation) -> bool:
@@ -48,3 +53,19 @@ def text_process(s: str) -> str:
     wo_punc = "".join([c for c in s.lower() if not is_punctuation(c)])
     processed = " ".join([w for w in wo_punc.split() if not is_stopword(w)])
     return processed
+
+
+def tokenize(s: str) -> str:
+    """
+    Tokenizes words in a given string.
+    """
+    tokenized_list = word_tokenize(s)
+    return str(" ".join(tokenized_list))
+
+
+def stem(s: str, ps=PorterStemmer()) -> list:
+    """
+    Stems given string of words, saves as a list.
+    """
+    words = s.split()
+    return [ps.stem(w) for w in words]
