@@ -27,12 +27,14 @@ def evaluate_model(predictions, ground_truth, positive=1):
     """
     Return F1 metric used in the competition from prediction and ground truth.
     """
+
     values = list(set([*predictions, *ground_truth]))[:2]
     cj = pd.merge(
         pd.DataFrame({"key": np.zeros(2), "pred": values}),
         pd.DataFrame({"key": np.zeros(2), "gt": values})
     )
-
+    print(predictions)
+    print(f"ground_truth:{ground_truth}")
     df = pd.DataFrame({"pred": predictions, "gt": ground_truth})
     df["count"] = 1
     dfg = df.groupby(["pred", "gt"], as_index=False).count()

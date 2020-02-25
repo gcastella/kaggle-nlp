@@ -2,7 +2,8 @@ import pandas as pd
 from utils.read import read_split
 from utils.utils import evaluate_model
 import pickle as pk
-
+import os
+import platform
 
 class BasePredictionTask:
     """
@@ -10,13 +11,16 @@ class BasePredictionTask:
     It is intended to be used for inheriting when using more complex models.
     """
 
-    def __init__(self, run, config):
+    def __init__(self, run, config, split=False):
         """
         Init 3_prediction task.
         """
         self.run_str = run
         self.config = config
-        self.split = read_split(config=config, run=run)
+        if not split:
+            self.split = read_split(config=config, run=run)
+        else:
+            self.split = split
         self.train_metric = []
         self.test_metric = []
         self.model_split = []
@@ -53,7 +57,7 @@ class BasePredictionTask:
         self.model = self.fit_model(df=full_data)
         self.save_model()
 
-    def write_predictions(self, df: pd.DataFrame, name: str) -> str:
+    def write_predictions(self, df: pd.DataFrame, name: str):
         """
         Write prediction file.
         Args:
@@ -61,10 +65,18 @@ class BasePredictionTask:
             results_folder: Folder in config for 3_prediction.
             name: string for the name of the folder with extension.
         """
-        full_name = f"./{self.config.prediction.folder}/{self.run_str}/{name}"
-        print(full_name)
+        if platform.system() == "Windows":
+            folder_name = f"{self.config.prediction.folder}/{self.run_str}"
+        else:
+            folder_name = f"./{self.config.prediction.folder}/{self.run_str}"
 
-        df.to_csv(full_name, index=False)
+        try:
+            os.makedirs(folder_name)
+        except FileExistsError:
+            if self.config.verbose:
+                print(f"Prediction folder for the current run {self.run_str} already exists")
+        file_name = os.path.join(folder_name, name)
+        df.to_csv(file_name, index=False)
 
     def fit_model(self, df: pd.DataFrame):
         """

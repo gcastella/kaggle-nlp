@@ -12,7 +12,7 @@ def read_config(file_path="./settings/config.yaml"):
     return munch.DefaultMunch().fromDict(context)
 
 
-def read_raw_data(config):
+def read_raw_data(config) -> {pd.DataFrame}:
     """
     Read the 3 kaggle csv's (train, test, 4_submission).
     """
@@ -21,7 +21,7 @@ def read_raw_data(config):
     return {"train": train, "test": test}
 
 
-def read_processed(config):
+def read_processed(config) -> {pd.DataFrame}:
     """
     Read 3 data files from 1_processed folder.
     """
@@ -32,7 +32,6 @@ def read_processed(config):
 
 
 def read_split(config, run):
-    #todo: this reads form 1_processed atm
     proc_dict = read_processed(config)
     proc_dict["name"] = "1_processed"
     return [proc_dict]
