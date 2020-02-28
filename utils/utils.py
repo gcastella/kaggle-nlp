@@ -56,6 +56,7 @@ def evaluate_model(predictions, ground_truth, config, positive=1):
 
 
 def create_run():
+    set_up_project_tree()
     now = datetime.now()
     run = f"{now.year:04}{now.month:02}{now.day:02}{now.hour:02}{now.minute:02}"
     print(f"Creating directories for run {run}.")
@@ -69,3 +70,12 @@ def create_run():
             print(f"Directory {folder}/{run} already exists.")
     print("Done!")
     return run
+
+def set_up_project_tree():
+    """
+    Creates the basic folders of the data folder
+    """
+    data_folder_structure = ["0_raw", "1_processed", "2_split", "3_prediction"]
+    missing_folders = [missing_folder for missing_folder in data_folder_structure if missing_folder not in os.listdir("data")]
+    for missing_folder in missing_folders:
+        os.makedirs(f"data/{missing_folder}")

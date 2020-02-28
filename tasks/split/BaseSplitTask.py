@@ -55,11 +55,6 @@ class BaseSplitTask:
         :param split_df: splitted dictionary of dataframes (expected to contain the "test" and "train" keys
         """
         split_output_folder = f"{self.config.split.folder}/{self.run}"
-        try:
-            os.makedirs(split_output_folder)
-        except FileExistsError:
-            if self.config.verbose:
-                print(f"Split folder for the current run {self.run} already exists")
 
         filename_training = f"split_training_set_{self.iteration_count}.csv"
         filename_test = f"split_test_set_{self.iteration_count}.csv"

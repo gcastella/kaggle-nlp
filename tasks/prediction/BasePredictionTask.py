@@ -72,11 +72,6 @@ class BasePredictionTask:
         else:
             folder_name = f"./{self.config.prediction.folder}/{self.run_str}"
 
-        try:
-            os.makedirs(folder_name)
-        except FileExistsError:
-            if self.config.verbose:
-                print(f"Prediction folder for the current run {self.run_str} already exists")
         file_name = os.path.join(folder_name, name)
         df.to_csv(file_name, index=False)
 
