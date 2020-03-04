@@ -23,36 +23,40 @@ def print_row(df: pd.Series):
         print(index, ": \n", value)
 
 
-def evaluate_model(predictions, ground_truth, positive=1):
+def evaluate_model(predictions, ground_truth, config, positive=1):
     """
     Return F1 metric used in the competition from prediction and ground truth.
     """
+    predictions = pd.Series(predictions["prediction"])
     values = list(set([*predictions, *ground_truth]))[:2]
     cj = pd.merge(
         pd.DataFrame({"key": np.zeros(2), "pred": values}),
         pd.DataFrame({"key": np.zeros(2), "gt": values})
     )
-
     df = pd.DataFrame({"pred": predictions, "gt": ground_truth})
     df["count"] = 1
+    print(df.head())
     dfg = df.groupby(["pred", "gt"], as_index=False).count()
 
     full_df = pd.merge(cj, dfg, on=["pred", "gt"], how="left").fillna(0)
 
     precision = int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) / (
             int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) +
-            int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] != positive), "count"])
+            int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] != positive), "count"]) +
+            float(config.general.eps)
     )
 
     recall = int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) / (
             int(full_df.loc[(full_df["pred"] == positive) & (full_df["gt"] == positive), "count"]) +
-            int(full_df.loc[(full_df["pred"] != positive) & (full_df["gt"] == positive), "count"])
+            int(full_df.loc[(full_df["pred"] != positive) & (full_df["gt"] == positive), "count"]) +
+            float(config.general.eps)
     )
 
-    return 2 * precision * recall / (precision + recall)
+    return 2 * precision * recall / (precision + recall + float(config.general.eps))
 
 
 def create_run():
+    set_up_project_tree()
     now = datetime.now()
     run = f"{now.year:04}{now.month:02}{now.day:02}{now.hour:02}{now.minute:02}"
     print(f"Creating directories for run {run}.")
@@ -66,3 +70,12 @@ def create_run():
             print(f"Directory {folder}/{run} already exists.")
     print("Done!")
     return run
+
+def set_up_project_tree():
+    """
+    Creates the basic folders of the data folder
+    """
+    data_folder_structure = ["0_raw", "1_processed", "2_split", "3_prediction"]
+    missing_folders = [missing_folder for missing_folder in data_folder_structure if missing_folder not in os.listdir("data")]
+    for missing_folder in missing_folders:
+        os.makedirs(f"data/{missing_folder}")

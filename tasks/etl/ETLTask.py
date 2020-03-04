@@ -21,7 +21,7 @@ class ETLTask:
 
     def run(self):
         """
-        Main function
+        Preprocesses data
         """
         train_extended = self.add_features(self.train)
         test_extended = self.add_features(self.test)

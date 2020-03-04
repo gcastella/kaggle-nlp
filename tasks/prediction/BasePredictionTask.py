@@ -2,7 +2,8 @@ import pandas as pd
 from utils.read import read_split
 from utils.utils import evaluate_model
 import pickle as pk
-
+import os
+import platform
 
 class BasePredictionTask:
     """
@@ -10,13 +11,16 @@ class BasePredictionTask:
     It is intended to be used for inheriting when using more complex models.
     """
 
-    def __init__(self, run, config):
+    def __init__(self, run, config, split=False):
         """
         Init 3_prediction task.
         """
         self.run_str = run
         self.config = config
-        self.split = read_split(config=config, run=run)
+        if not split:
+            self.split = read_split(config=config, run=run)
+        else:
+            self.split = split
         self.train_metric = []
         self.test_metric = []
         self.model_split = []
@@ -42,18 +46,20 @@ class BasePredictionTask:
 
             # Calculate metrics
             self.train_metric.append(
-                evaluate_model(train_pred, split["train"][target_str])
+                evaluate_model(train_pred, split["train"][target_str], config=self.config)
             )
             self.test_metric.append(
-                evaluate_model(test_pred, split["test"][target_str])
+                evaluate_model(test_pred, split["test"][target_str], config=self.config)
             )
 
         print("Global model.")
-        full_data = pd.concat(self.split[0]["train"], self.split[0]["test"])
+        # full_data = pd.concat(self.split[0]["train"], self.split[0]["test"])
+        full_data = self.split.whole_training_data
+        print(full_data)
         self.model = self.fit_model(df=full_data)
         self.save_model()
 
-    def write_predictions(self, df: pd.DataFrame, name: str) -> str:
+    def write_predictions(self, df: pd.DataFrame, name: str):
         """
         Write prediction file.
         Args:
@@ -61,10 +67,13 @@ class BasePredictionTask:
             results_folder: Folder in config for 3_prediction.
             name: string for the name of the folder with extension.
         """
-        full_name = f"./{self.config.prediction.folder}/{self.run_str}/{name}"
-        print(full_name)
+        if platform.system() == "Windows":
+            folder_name = f"{self.config.prediction.folder}/{self.run_str}"
+        else:
+            folder_name = f"./{self.config.prediction.folder}/{self.run_str}"
 
-        df.to_csv(full_name, index=False)
+        file_name = os.path.join(folder_name, name)
+        df.to_csv(file_name, index=False)
 
     def fit_model(self, df: pd.DataFrame):
         """
@@ -85,6 +94,11 @@ class BasePredictionTask:
     def save_model(self):
         folder = self.config.prediction.model.folder
         label = self.config.prediction.model.label
+        try:
+            os.makedirs(folder)
+        except FileExistsError:
+            if self.config.verbose:
+                print(f"Model folder for the current run {self.run} already exists")
 
         pk.dump(self, open(f"{folder}/{self.run_str}_{label}.p", "wb"))
 

@@ -1,16 +1,22 @@
 ## All config here
 
+
 etl:                                      # parameters for etl task.
   raw:
-    folder: "data/0_raw"                  # folder where raw data are.
+    folder: "data/0_raw"                  # folder where 0_raw data are.
     train_file: "train.csv"               # kaggle file for training.
     test_file: "test.csv"                 # kaggle file for submitting the predictions.
   processed:
-    folder: "data/1_processed"            # folder where data processed in the etl task are stored.
+    folder: "data/1_processed"            # folder where data 1_processed in the etl task are stored.
 
 split:                                    # parameters for split task.
   folder: "data/2_split"                  # folder where split files are stored.
   label: "10_cv"                          # label to use for the split file.
+  model:
+    BaseSplitTask:
+      training_set_proportion: 0.7
+    CrossValidationSplitTask:
+      training_set_proportion: 0.7
 
 prediction:                               # parameters for prediction task.
   folder: "data/3_prediction"             # folder where prediction files are stored.
@@ -22,3 +28,7 @@ prediction:                               # parameters for prediction task.
 submission:                               # parameters for submission task.
   folder: "data/4_submission"             # folder where submission files are stored.
   label: "submission"                     # label for the submission name.
+
+general:                                  # general parameters
+  verbose: True                           # increases verbose
+  eps: 1E-30                              # Numerical zero value
